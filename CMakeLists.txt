@@ -33,6 +33,8 @@ set(SOURCE_FILES
     ini_parser.cpp
     common.cpp
     log.cpp
+    database.cpp
+    central.cpp
     main.cpp
 )
 

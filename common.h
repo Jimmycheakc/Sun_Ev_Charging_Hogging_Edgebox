@@ -11,7 +11,10 @@ public:
     std::string FnGetFileName(const std::string& str);
     void FnLogExecutableInfo(const std::string& str);
     std::string FnGetDateTime();
-    std::string FnGetDateTimeFormate_yymmdd();
+    std::string FnGetDateTimeFormat_yymmdd();
+    std::string FnGetDateTimeFormat_YYYY_MM_DD_HH_MM_SS();
+    std::string FnGetLocalIPAddress();
+    std::string FnConvertImageToBase64String(const std::string& image_path);
 
     /*
      * Singleton Common should not be cloneable

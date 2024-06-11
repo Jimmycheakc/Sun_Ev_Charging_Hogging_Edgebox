@@ -43,7 +43,7 @@ void Logger::FnCreateLogFile()
             }
         }
 
-        std::string absoluteFilePath = LOG_FILE_PATH + "/ev_charging_hogging_" + Common::getInstance()->FnGetDateTimeFormate_yymmdd() + ".log";
+        std::string absoluteFilePath = LOG_FILE_PATH + "/ev_charging_hogging_" + Common::getInstance()->FnGetDateTimeFormat_yymmdd() + ".log";
 
         auto asyncFile = spdlog::basic_logger_mt<spdlog::async_factory>(loggerName_, absoluteFilePath);
         asyncFile->set_pattern("%v");
@@ -79,7 +79,7 @@ void Logger::FnLog(std::string sMsg, std::string sOption)
         sLogMsg << std::setw(10) << std::left << sOption;
         sLogMsg << sMsg;
 
-        std::string absoluteFilePath = LOG_FILE_PATH + "/ev_charging_hogging_" + Common::getInstance()->FnGetDateTimeFormate_yymmdd() + ".log";
+        std::string absoluteFilePath = LOG_FILE_PATH + "/ev_charging_hogging_" + Common::getInstance()->FnGetDateTimeFormat_yymmdd() + ".log";
 
         if (!(boost::filesystem::exists(absoluteFilePath)))
         {
