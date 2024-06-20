@@ -35,6 +35,8 @@ set(SOURCE_FILES
     log.cpp
     database.cpp
     central.cpp
+    timer.cpp
+    camera.cpp
     main.cpp
 )
 
@@ -45,4 +47,4 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/configuration.ini ${CMAKE_CURRENT_BIN
 add_executable(ev_hogging ${SOURCE_FILES})
 
 # Link against libraries
-target_link_libraries(ev_hogging spdlog boost_system boost_filesystem ${ODBC_LIBRARIES})
+target_link_libraries(ev_hogging spdlog boost_system boost_filesystem boost_thread ${ODBC_LIBRARIES})

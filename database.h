@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include "log.h"
+#include "structure.h"
 
 class OdbcDatabase
 {
@@ -129,6 +130,50 @@ public:
         hStmt_ = NULL;
 
         return true;
+    }
+
+    int get_last_inserted_id(const std::string& tableName)
+    {
+        if (!connected_)
+        {
+            return -1;
+        }
+
+        SQLRETURN ret;
+        SQLINTEGER lastInsertedID = 0;
+
+        ret = SQLAllocHandle(SQL_HANDLE_STMT, hDbc_, &hStmt_);
+        if (!check_error(ret, SQL_HANDLE_STMT, hStmt_, "SQLAllocHandle STMT"))
+        {
+            hStmt_ = NULL;
+            return -1;
+        }
+
+        std::string query = "SELECT LAST_INSERT_ID() FROM " + tableName;
+        ret = SQLExecDirect(hStmt_, (SQLCHAR*)query.c_str(), SQL_NTS);
+        if (!check_error(ret, SQL_HANDLE_STMT, hStmt_, "SELECT LAST_INSERT_ID()"))
+        {
+            SQLFreeHandle(SQL_HANDLE_STMT, hStmt_);
+            hStmt_ = NULL;
+            return -1;
+        }
+
+        ret = SQLFetch(hStmt_);
+        if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+        {
+            ret = SQLGetData(hStmt_, 1, SQL_C_LONG, &lastInsertedID, 0, NULL);
+            if (!check_error(ret, SQL_HANDLE_STMT, hStmt_, "SQLGetData"))
+            {
+                SQLFreeHandle(SQL_HANDLE_STMT, hStmt_);
+                hStmt_ = NULL;
+                return -1;
+            }
+        }
+
+        SQLFreeHandle(SQL_HANDLE_STMT, hStmt_);
+        hStmt_ = NULL;
+
+        return static_cast<int>(lastInsertedID);
     }
 
     int select_count(const std::string& query)
@@ -271,22 +316,6 @@ public:
     const std::string DB_USERNAME    = "evcharging";
     const std::string DB_PASSWORD    = "SJ2001";
 
-    typedef struct
-    {
-        std::string location_code;
-        std::string lot_no;
-        std::string custom_park_lot_no;
-        std::string lpn;
-        std::string lot_in_image_path;
-        std::string lot_out_image_path;
-        std::string lot_in_dt;
-        std::string lot_out_dt;
-        std::string add_dt;
-        std::string update_dt;
-        std::string lot_in_central_sent_dt;
-        std::string lot_out_central_sent_dt;
-    } parking_lot_t;
-
     static MariaDB* getInstance();
     void FnConnectMariaLocalDatabase();
     bool FnIsConnected();
@@ -297,12 +326,14 @@ public:
     bool FnReconnectMariaLocalDatabase();
 
     // Table --> tbl_ev_lot_status
-    void FnInsertEvLotStatusRecord(const std::string& carpark_code, const std::string& device_ip, const std::string& error_code);
+    bool FnInsertEvLotStatusRecord(const std::string& carpark_code, const std::string& device_ip, const std::string& error_code);
+    int FnGetLastInsertedIDFromEvLotStatusRecord();
     bool FnIsEvLotStatusTableEmpty();
     void FnRemoveAllRecordFromEvLotStatusTable();
 
     // Table --> tbl_ev_lot_trans
-    void FnInsertEvLotTransRecord(const parking_lot_t& lot);
+    bool FnInsertEvLotTransRecord(const parking_lot_t& lot);
+    int FnGetLastInsertedIDFromEvLotTransRecord();
     bool FnIsEvLotTransTableEmpty();
     void FnRemoveAllRecordFromEvLotTransTable();
 

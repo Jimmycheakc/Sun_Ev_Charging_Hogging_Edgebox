@@ -17,8 +17,6 @@ public:
     int FnGetCentralServerPort() const;
     std::string FnGetParkingLotLocationCode() const;
     int FnGetTimerForFilteringSnapshot() const;
-    int FnGetTimerTimeoutForCameraHeartbeat() const;
-    int FnGetTimerForCameraTimeSync() const;
     int FnGetTimerTimeoutForDeviceStatusUpdateToCentral() const;
     int FnGetTimerCentralHeartbeat() const;
 
@@ -42,8 +40,6 @@ private:
     int centralServerPort_;
     std::string parkingLotLocationCode_;
     int timerForFilteringSnapshot_;
-    int timerTimeoutForCameraHeartbeat_;
-    int timerForCameraTimeSync_;
     int timerTimeoutForDeviceStatusUpdateToCentral_;
     int timerCentralHeartbeat_;
 };

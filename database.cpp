@@ -106,15 +106,16 @@ bool MariaDB::FnReconnectMariaLocalDatabase()
     return true;
 }
 
-void MariaDB::FnInsertEvLotStatusRecord(const std::string& carpark_code, const std::string& device_ip, const std::string& error_code)
+bool MariaDB::FnInsertEvLotStatusRecord(const std::string& carpark_code, const std::string& device_ip, const std::string& error_code)
 {
+    bool ret = false;
     Logger::getInstance()->FnLog(__func__, "DB");
 
     if (!FnIsConnected())
     {
         FnSetDatabaseStatus(false);
         Logger::getInstance()->FnLog("Database is not connected.", "DB");
-        return;
+        return ret;
     }
 
     std::ostringstream query;
@@ -152,11 +153,29 @@ void MariaDB::FnInsertEvLotStatusRecord(const std::string& carpark_code, const s
     if (result)
     {
         Logger::getInstance()->FnLog(query.str(), "DB");
+        ret = true;
     }
     else
     {
         Logger::getInstance()->FnLog("Failed to execute insert query: " + query.str(), "DB");
+        ret = false;
     }
+
+    return ret;
+}
+
+int MariaDB::FnGetLastInsertedIDFromEvLotStatusRecord()
+{
+    Logger::getInstance()->FnLog(__func__, "DB");
+
+    if (!FnIsConnected())
+    {
+        FnSetDatabaseStatus(false);
+        Logger::getInstance()->FnLog("Database is not connected.", "DB");
+        return -1;
+    }
+
+    return mariaDatabase_->get_last_inserted_id("tbl_ev_lot_status");
 }
 
 bool MariaDB::FnIsEvLotStatusTableEmpty()
@@ -221,19 +240,20 @@ void MariaDB::FnRemoveAllRecordFromEvLotStatusTable()
     }
 }
 
-void MariaDB::FnInsertEvLotTransRecord(const parking_lot_t& lot)
+bool MariaDB::FnInsertEvLotTransRecord(const parking_lot_t& lot)
 {
+    bool ret = false;
     Logger::getInstance()->FnLog(__func__, "DB");
 
     if (!FnIsConnected())
     {
         FnSetDatabaseStatus(false);
         Logger::getInstance()->FnLog("Database is not connected.", "DB");
-        return;
+        return ret;
     }
 
     std::ostringstream query;
-    query << "INSERT INTO tbl_ev_lot_trans (location_code, lot_no, custom_park_lot_no, lpn, lot_in_image, lot_out_image, lot_in_dt, lot_out_dt, add_dt, update_dt, lot_in_central_sent_dt, lot_out_central_sent_dt) VALUES (";
+    query << "INSERT INTO tbl_ev_lot_trans (location_code, lot_no, lpn, lot_in_image, lot_out_image, lot_in_dt, lot_out_dt, add_dt, update_dt, lot_in_central_sent_dt, lot_out_central_sent_dt) VALUES (";
     
     if (lot.location_code.empty())
     {
@@ -251,15 +271,6 @@ void MariaDB::FnInsertEvLotTransRecord(const parking_lot_t& lot)
     else
     {
         query << "'" << lot.lot_no << "', ";
-    }
-
-    if (lot.custom_park_lot_no.empty())
-    {
-        query << "NULL, ";
-    }
-    else
-    {
-        query << "'" << lot.custom_park_lot_no << "', ";
     }
 
     if (lot.lpn.empty())
@@ -348,11 +359,29 @@ void MariaDB::FnInsertEvLotTransRecord(const parking_lot_t& lot)
     if (result)
     {
         Logger::getInstance()->FnLog(query.str(), "DB");
+        ret = true;
     }
     else
     {
         Logger::getInstance()->FnLog("Failed to execute insert query: " + query.str(), "DB");
+        ret = false;
     }
+
+    return ret;
+}
+
+int MariaDB::FnGetLastInsertedIDFromEvLotTransRecord()
+{
+    Logger::getInstance()->FnLog(__func__, "DB");
+
+    if (!FnIsConnected())
+    {
+        FnSetDatabaseStatus(false);
+        Logger::getInstance()->FnLog("Database is not connected.", "DB");
+        return -1;
+    }
+
+    return mariaDatabase_->get_last_inserted_id("tbl_ev_lot_trans");
 }
 
 bool MariaDB::FnIsEvLotTransTableEmpty()

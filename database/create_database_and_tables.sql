@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS tbl_ev_lot_trans (
     id INT AUTO_INCREMENT PRIMARY KEY,
     location_code VARCHAR(10),
     lot_no VARCHAR(10),
-    custom_park_lot_no VARCHAR(10),
     lpn VARCHAR(10),
     lot_in_image VARCHAR(200),
     lot_out_image VARCHAR(200),

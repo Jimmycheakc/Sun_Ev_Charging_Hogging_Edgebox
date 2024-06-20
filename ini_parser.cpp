@@ -14,8 +14,6 @@ IniParser::IniParser()
     centralServerPort_(0),
     parkingLotLocationCode_(""),
     timerForFilteringSnapshot_(0),
-    timerTimeoutForCameraHeartbeat_(0),
-    timerForCameraTimeSync_(0),
     timerTimeoutForDeviceStatusUpdateToCentral_(0),
     timerCentralHeartbeat_(0)
 {
@@ -51,8 +49,6 @@ bool IniParser::FnReadIniFile()
         centralServerPort_                              = pt.get<int>("setting.centralServerPort");
         parkingLotLocationCode_                         = pt.get<std::string>("setting.parkingLotLocationCode");
         timerForFilteringSnapshot_                      = pt.get<int>("setting.timerForFilteringSnapshot");
-        timerTimeoutForCameraHeartbeat_                 = pt.get<int>("setting.timerTimeoutForCameraHeartbeat");
-        timerForCameraTimeSync_                         = pt.get<int>("setting.timerForCameraTimeSync");
         timerTimeoutForDeviceStatusUpdateToCentral_     = pt.get<int>("setting.timerTimeoutForDeviceStatusUpdateToCentral");
         timerCentralHeartbeat_                          = pt.get<int>("setting.timerCentralHeartbeat");
 
@@ -109,16 +105,6 @@ std::string IniParser::FnGetParkingLotLocationCode() const
 int IniParser::FnGetTimerForFilteringSnapshot() const
 {
     return timerForFilteringSnapshot_;
-}
-
-int IniParser::FnGetTimerTimeoutForCameraHeartbeat() const
-{
-    return timerTimeoutForCameraHeartbeat_;
-}
-
-int IniParser::FnGetTimerForCameraTimeSync() const
-{
-    return timerForCameraTimeSync_;
 }
 
 int IniParser::FnGetTimerTimeoutForDeviceStatusUpdateToCentral() const
